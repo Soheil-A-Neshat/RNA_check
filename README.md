@@ -6,24 +6,16 @@ Requires the following packages to run:
   3. Infernal v1.1.4
 
 # Installation
-conda create -n RNA_check barrnap trnascan-se
 
-git clone https://github.com/Soheil-A-Neshat/RNA_tag.git
-cd RNA_check
-./RNA_check
+You can just RNA_check from GitHub and run it directly.
 
-Run without installing
-You can just download RNA_check from GitHub and run it directly.
+Retrieve the files:  
+git clone https://github.com/Soheil-A-Neshat/RNA_tag.git  
+Create a Conda environment with prerequisites using the RNA_check.yml file:  
 
-Retrieve the files:
-
-git clone https://github.com/Soheil-A-Neshat/RNA_tag.git\n
-Create a Conda environment with prerequisites using the RNA_check.yml file:
-
-conda env create -n RNA_check -f RNA_check.yml \n
-conda activate RNA_check \n
-Then, run RNA_check:
-
-RNA_check -h
-
+conda env create -n RNA_check -f RNA_check.yml  
+conda activate RNA_check  
+Then, run RNA_check:  
+RNA_check -h  
+# Citation
 Please cite "Neshat, S. A. (2022). Microbiome studies on anaerobic digestion using genome–resolved multi–omics.
