@@ -18,4 +18,4 @@ conda activate RNA_check
 Then, run RNA_check:  
 RNA_check -h  
 # Citation
-Please cite "Neshat, S. A. (2022). Microbiome studies on anaerobic digestion using genome–resolved multi–omics.
+Please cite "Neshat, S. A. (2022). Microbiome studies on anaerobic digestion using genome–resolved multi–omics."
