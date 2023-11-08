@@ -17,5 +17,9 @@ conda env create -n RNA_check -f RNA_check.yml
 conda activate RNA_check  
 Then, run RNA_check:  
 RNA_check -h  
+
+# Usage
+./RNA_check [OPTIONS] [fasta_directory]  
+
 # Citation
 Please cite "Neshat, S. A. (2022). Microbiome studies on anaerobic digestion using genome–resolved multi–omics."
