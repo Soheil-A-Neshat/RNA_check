@@ -1,0 +1,8 @@
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - barrnap=0.9
+  - trnascan-se=2.0.12
+  - infernal=1.1.4
