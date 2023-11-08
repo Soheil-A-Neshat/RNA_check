@@ -6,5 +6,9 @@ Requires the following packages to run
   3. Infernal v1.1.4
 
 Installation:
-conda create -n RNA_check barrnap trnascan-se; 
-conda install RNA_check
+conda create -n RNA_check barrnap trnascan-se
+
+git clone https://github.com/Soheil-A-Neshat/RNA_tag.git
+cd RNA_check
+./RNA_check
+
