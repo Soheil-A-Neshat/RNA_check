@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 v=0.1
 #"rRNA and tRNA counter"
-# "Author Soheil A. Neshat"
+# "Author: Soheil A. Neshat"
+# "Singapore Centre for Environmental Life Sciences Engineering, Nanyang Technological University, Singapore"
 # "Email soheilneshat@gmail.com"
 # "Please cite Neshat, S. A. (2022). Microbiome studies on anaerobic digestion using genome–resolved multi–omics."
 # "Please run this shell script inside the directory containing the outputs of barrnap (.gff) and tRNAScan-SE (.o)"
-# "Run chmod 777 RNA_count.sh if you get the error message permission denied. "
+# "Run chmod 777 RNA_check if you get the error message permission denied. "
 # " "
 # " "
 
@@ -16,12 +17,14 @@ v=0.1
 ############################################################
 # Header                                                   #
 ############################################################
+echo 
 Header()
 {
    echo "############################################################"
    echo "#               rRNA and tRNA annotation and counter       ""#"
    echo "#                    ""Version" $v"                           ""#"
    echo "############################################################"
+   echo
    echo
 }
 ############################################################
@@ -32,27 +35,31 @@ Header()
 Help()
 {
    # Display Help
-   echo "rRNA and tRNA counter"
-   echo "Version" $v
-   echo "Author Soheil A. Neshat"
+   Header
+   echo "Author: Soheil A. Neshat"
+   echo "Singapore Centre for Environmental Life Sciences Engineering, Nanyang Technological University, Singapore"
    echo "Email soheilneshat@gmail.com"
    echo "Please cite Neshat, S. A. (2022). Microbiome studies on anaerobic digestion using genome–resolved multi–omics."
-   echo "Please run this shell script inside the directory containing the outputs of barrnap (.gff) and tRNAScan-SE (.o)"
-   echo "Run chmod 777 RNA_count.sh if you get the error message permission denied. "
-   echo "Syntax: ./RNA_count.sh [-i|r|t|o|h]"
+   echo
+   echo "USAGE: ./RNA_check [-i|x|r|t|o|h]"
    echo "options:"
-   echo "h     Print this Help"
-   echo "i     Path to MAGs fasta directory"
-   echo "x     MAGs format (default: fa)"
-   echo "r     Path to tRNAScan-SE output directory (containing .o files)"
-   echo "t     Path to barrnap output directory (containing gff files)"
-   echo "o     Output directory"   
-   echo "v     Print software version and exit."
+   echo "-h     Print this Help"
+   echo "-i     Path to MAGs fasta directory"
+   echo "-x     MAGs format (default: fa)"
+   echo "-r     Path to tRNAScan-SE output directory (containing .o files)"
+   echo "-t     Path to barrnap output directory (containing gff files)"
+   echo "-o     Output directory"   
    echo
-   echo "MAGs directory provided. Proceed to rRNA and tRNA annotation using:"
+   echo
+   echo "Run chmod 777 RNA_check if you get the error message permission denied. "
+   echo "RNA_check by default uses all available cpus (threads)."
+   echo "Can either provide the MAGs fasta directory or rRNA and tRNA annotation directories."
+   echo "If provide both options RNA_check will ignore the annotation directories and will do the annotation."
+   echo
+   echo
+   echo "Dependencies version:"
    barrnap -v
-   echo
-   tRNAscan-SE -h
+   tRNAscan-SE -h 2>&1 | sed -n 2p
 }
 ############################################################
 ############################################################
@@ -89,7 +96,7 @@ p=$(nproc --all)
 # Process the input options. Add options as needed.        #
 ############################################################
 # Get the options
-while getopts ":h:i:x:r:t:o:" option; do
+while getopts ":hi:x:r:t:o:" option; do
    case $option in
       h) # display Help
          Help
