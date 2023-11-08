@@ -5,7 +5,7 @@ v=0.1
 # "Email soheilneshat@gmail.com"
 # "Please cite Neshat, S. A. (2022). Microbiome studies on anaerobic digestion using genome–resolved multi–omics."
 # "Please run this shell script inside the directory containing the outputs of barrnap (.gff) and tRNAScan-SE (.o)"
-# "Run chmod 777 RNA_count.sh if you get the error message permission denied. "
+# "Run chmod 777 RNA_count if you get the error message permission denied. "
 # " "
 # " "
 
