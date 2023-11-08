@@ -5,7 +5,7 @@ Requires the following packages to run
   2. tRNAScan-SE v2.0.12
   3. Infernal v1.1.4
 
-#Installation
+# Installation
 conda create -n RNA_check barrnap trnascan-se
 
 git clone https://github.com/Soheil-A-Neshat/RNA_tag.git
