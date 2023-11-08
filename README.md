@@ -29,6 +29,7 @@ options:
 -t     Path to barrnap output directory (containing gff files)  
 -o     Output directory  
 
+* RNA_check by default uses all available cpus (threads)
 * Can either provide the MAGs fasta directory or rRNA and tRNA annotation directories.
 * If provide both options RNA_check will ignore the annotation directories and will do the annotation.
 
