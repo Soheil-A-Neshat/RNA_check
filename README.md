@@ -20,7 +20,7 @@ Retrieve the files:
 git clone https://github.com/Soheil-A-Neshat/RNA_tag.git\n
 Create a Conda environment with prerequisites using the RNA_check.yml file:
 
-conda env create -n RNA_check -f RNA_check.yml\n
+conda env create -n RNA_check -f RNA_check.yml \n
 conda activate RNA_check\n
 Then, run RNA_check:
 
