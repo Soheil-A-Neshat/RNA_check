@@ -1,0 +1,230 @@
+#!/usr/bin/env bash
+v=0.1
+#"rRNA and tRNA counter"
+# "Author Soheil A. Neshat"
+# "Email soheilneshat@gmail.com"
+# "Please cite Neshat, S. A. (2022). Microbiome studies on anaerobic digestion using genome–resolved multi–omics."
+# "Please run this shell script inside the directory containing the outputs of barrnap (.gff) and tRNAScan-SE (.o)"
+# "Run chmod 777 RNA_count.sh if you get the error message permission denied. "
+# " "
+# " "
+
+#Author Soheil A. Neshat
+#Email soheilneshat@gmail.com
+#Please cite Neshat, S. A. (2022). Microbiome studies on anaerobic digestion using genome–resolved multi–omics.
+
+############################################################
+# Header                                                   #
+############################################################
+Header()
+{
+   echo "############################################################"
+   echo "#               rRNA and tRNA annotation and counter       ""#"
+   echo "#                    ""Version" $v"                           ""#"
+   echo "############################################################"
+   echo
+}
+############################################################
+
+############################################################
+# Help                                                     #
+############################################################
+Help()
+{
+   # Display Help
+   echo "rRNA and tRNA counter"
+   echo "Version" $v
+   echo "Author Soheil A. Neshat"
+   echo "Email soheilneshat@gmail.com"
+   echo "Please cite Neshat, S. A. (2022). Microbiome studies on anaerobic digestion using genome–resolved multi–omics."
+   echo "Please run this shell script inside the directory containing the outputs of barrnap (.gff) and tRNAScan-SE (.o)"
+   echo "Run chmod 777 RNA_count.sh if you get the error message permission denied. "
+   echo "Syntax: ./RNA_count.sh [-i|r|t|o|h]"
+   echo "options:"
+   echo "h     Print this Help"
+   echo "i     Path to MAGs fasta directory"
+   echo "x     MAGs format (default: fa)"
+   echo "r     Path to tRNAScan-SE output directory (containing .o files)"
+   echo "t     Path to barrnap output directory (containing gff files)"
+   echo "o     Output directory"   
+   echo "v     Print software version and exit."
+   echo
+   echo "MAGs directory provided. Proceed to rRNA and tRNA annotation using:"
+   barrnap -v
+   echo
+   tRNAscan-SE -h
+}
+############################################################
+############################################################
+# Main program                                             #
+############################################################
+############################################################
+
+############################################################
+# Progress spinner                                         #
+############################################################
+sp="/-\|"
+sc=0
+spin() {
+   printf "\b${sp:sc++:1}"
+   ((sc==${#sp})) && sc=0
+}
+endspin() {
+   printf "\r%s\n" "$@"
+}
+############################################################
+
+############################################################
+# Set variables
+############################################################
+r_path="."
+t_path="."
+pp=`pwd`
+m_path="no_MAG"
+o=${pp}/.
+p=$(nproc --all)
+############################################################
+
+############################################################
+# Process the input options. Add options as needed.        #
+############################################################
+# Get the options
+while getopts ":h:i:x:r:t:o:" option; do
+   case $option in
+      h) # display Help
+         Help
+         exit;;
+      i) # MAGs directory
+         m_path=$OPTARG;;
+      x) # MAGs format
+         x=$OPTARG;;
+      r) # rRNA directory
+         r_path=$OPTARG;;
+      t) # tRNA directory
+         t_path=$OPTARG;;
+      o) # Output directory
+         o=$OPTARG;;
+      \?) # Invalid option
+         echo "Error: Invalid option"
+         exit;;
+   esac
+done
+############################################################
+Header
+############################################################
+#Running barrnap and tRNAScan-SE                           #
+############################################################
+if [[ ${m_path} != "no_MAG" ]]
+then
+echo "MAGs directory provided. Proceed to rRNA and tRNA annotation using: barrnap and tRNAScan-SE"
+mkdir ${o}
+mkdir ${o}/tmp
+
+if ls ${m_path}/*.${x} 1> /dev/null 2>&1
+then
+	m_r_task(){
+		M=$(echo ${1} | rev | cut -d'/' -f 1 | rev)
+		barrnap --threads ${p} --quiet ${1} > ${o}/tmp/${M}.rRNA.gff
+		return 0
+	}
+	m_t_task(){
+		M=$(echo ${1} | rev | cut -d'/' -f 1 | rev)
+		tRNAscan-SE -G -H -o ${o}/tmp/${M}.tRNA.o ${1} 1> /dev/null 2>&1
+		return 0
+	}
+	echo "rRNA and tRNA annotation on MAGs located in" 
+	echo ${m_path}
+	echo "file format: " ${x}
+        for j in ${m_path}/*.${x}
+        do
+		m_t_task ${j} &
+	done
+	
+	for job in `jobs -p`
+	do
+		spin
+    		wait $job || let "FAIL+=1"
+	done
+	endspin
+	for j in ${m_path}/*.${x}
+        do
+               m_r_task ${j}
+        done
+	r_path=${o}/tmp
+	t_path=${o}/tmp
+else
+echo "ERROR: Files not found."
+exit
+fi
+fi
+############################################################
+# rRNA count                                               #
+############################################################
+if ls ${pp}/$o 1> /dev/null 2>&1
+then 
+	echo "Saving output files into: " $o
+else
+	echo "Creating output directory: " $o
+	mkdir ${o}
+fi
+
+if ls ${r_path}/*.gff 1> /dev/null 2>&1
+then
+	r_task(){
+		M=$(echo ${1} | rev | cut -d'/' -f 1 | rev)
+		S5=$(grep -c 5S_rRNA $1)
+                S16=$(grep -c 16S_rRNA $1)
+                S23=$(grep -c 23S_rRNA $1)
+                P=$(grep -c partial $1)
+                echo ${M} ${S5} ${S16} ${S23} ${P}>> ${o}/rRNA_count.txt
+	}
+	echo "Counting rRNA in" ${r_path}
+	echo "Genome" "5S" "16S" "23S" "Partial"> ${o}/rRNA_count.txt
+	for i in ${r_path}/*.gff
+	do
+		r_task ${i} &
+        done
+	for job in `jobs -p`
+        do
+                spin
+                wait $job || let "FAIL+=1"
+        done
+	endspin
+	echo "rRNA counts are stored at: "${o}"/rRNA_count.txt"
+	echo 
+else
+	echo "ERROR1: gff file not found."
+	echo "Proceeding to look for tRNA annotation files"
+fi
+############################################################
+
+############################################################
+# rRNA count                                               #
+############################################################
+if ls ${t_path}/*.o 1> /dev/null 2>&1
+then
+	t_task(){
+		M=$(echo ${1} | rev | cut -d'/' -f 1 | rev)
+		n=$(sed '4q;d' $1 | cut -d'_' -f1)
+                tRNA=$(grep -c $n $1)
+                PS=$(grep -c pseudo $1)
+                echo ${M} ${tRNA} ${PS} >> ${o}/tRNA_count.txt
+	}
+	echo "Counting tRNA genes in:" ${t_path}
+	echo "Genome" "tRNA_count" "Pseudo" > ${o}/tRNA_count.txt
+	for i in ${t_path}/*.o
+	do
+		t_task ${i} &
+        done
+	for job in `jobs -p`
+        do
+                spin
+                wait $job || let "FAIL+=1"
+        done
+        endspin
+
+	echo "tRNA counts are stored at: "${o}"/tRNA_count.txt"
+else
+	echo "ERROR2: tRNAScan-SE output file not found."
+fi
+############################################################
