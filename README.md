@@ -16,6 +16,7 @@ Create a Conda environment with prerequisites using the RNA_check.yml file:
 conda env create -n RNA_check -f RNA_check.yml  
 conda activate RNA_check  
 Then, run RNA_check:  
+  
 RNA_check -h  
 
 # Usage
