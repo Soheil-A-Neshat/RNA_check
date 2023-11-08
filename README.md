@@ -20,6 +20,16 @@ RNA_check -h
 
 # Usage
 ./RNA_check [OPTIONS] [fasta_directory]  
+options:  
+-h     Print this Help  
+-i     Path to MAGs fasta directory  
+-x     MAGs format (default: fa)  
+-r     Path to tRNAScan-SE output directory (containing .o files)  
+-t     Path to barrnap output directory (containing gff files)  
+-o     Output directory  
+
+* Can either provide the MAGs fasta directory or rRNA and tRNA annotation directories.
+* If provide both options RNA_check will ignore the annotation directories and will do the annotation.
 
 # Citation
 Please cite "Neshat, S. A. (2022). Microbiome studies on anaerobic digestion using genome–resolved multi–omics."
