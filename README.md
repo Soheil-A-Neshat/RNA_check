@@ -20,7 +20,7 @@ Then, run RNA_check:
 RNA_check -h  
 
 # Usage
-./RNA_check [OPTIONS] [fasta_directory]  
+./RNA_check [OPTIONS] 
 options:  
 -h     Print this Help  
 -i     Path to MAGs fasta directory  
